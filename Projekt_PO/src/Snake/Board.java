@@ -49,6 +49,8 @@ public class Board extends JPanel implements ActionListener {
     private boolean rightEnemyDirection = false;
     private boolean upEnemyDirection = false;
     private boolean downEnemyDirection = false;
+    private int lastMove = 3;
+    private boolean turnAround = false;
     private boolean inGame = true;
     private boolean victory = false;
     private Timer timer;
@@ -65,22 +67,29 @@ public class Board extends JPanel implements ActionListener {
     private int[][] moves = new int[B_HEIGHT/DOT_SIZE+2][B_WIDTH/DOT_SIZE+2];
 
     private void enemyMove(){
-        for(int i=1; i <= B_HEIGHT/DOT_SIZE; i++){
+//        if(turnAround){
+//            if(lastMove)
+//        }
+        for (int i=1; i <= B_HEIGHT/DOT_SIZE; i++){
             for(int j=1; j <= B_WIDTH/DOT_SIZE; j++){
                 moves[i][j] = -1;
             }
         }
         for(int i=0; i < dots; i++){
-            moves[y[i]/DOT_SIZE][x[i]/DOT_SIZE] = -2;
+            moves[y[i]/DOT_SIZE+1][x[i]/DOT_SIZE+1] = -2;
         }
+        for(int i=1; i < dots_enemy; i++){
+            moves[y_enemy[i]/DOT_SIZE+1][x_enemy[i]/DOT_SIZE+1] = -2;
+        }
+
         for(int i=0; i < B_HEIGHT/DOT_SIZE+2; i++){
             moves[0][i] = -2;
             moves[B_HEIGHT/DOT_SIZE+1][i] = -2;
             moves[i][0] = -2;
             moves[i][B_WIDTH/DOT_SIZE+1] = -2;
         }
-        System.out.println(apple_x/DOT_SIZE);
-        System.out.println(apple_y/DOT_SIZE);
+//        System.out.println(apple_x/DOT_SIZE);
+//        System.out.println(apple_y/DOT_SIZE);
         moves[apple_y/DOT_SIZE+1][apple_x/DOT_SIZE+1] = 0;
 //        for(int i=0; i < 32; i++){
 //            for(int j=0; j < 32; j++){
@@ -109,21 +118,46 @@ public class Board extends JPanel implements ActionListener {
 //        System.out.println("x: " + x_enemy[0]/DOT_SIZE);
 //        System.out.println("y: " + y_enemy[0]/DOT_SIZE);
 //        System.out.println("move is " + moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1]);
+
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 2){
 //            System.out.println("move up");
-            downEnemyDirection = true;
+//            if(lastMove == 1){
+//                rightEnemyDirection = true;
+//                lastMove = 4;
+//            } else {
+                lastMove = 2;
+                downEnemyDirection = true;
+//            }
         }
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 1){
-//            System.out.println("move down");
-            upEnemyDirection = true;
+//            System.out.println("move down");\
+//            if(lastMove == 2){
+//                leftEnemyDirection = true;
+//                lastMove = 3;
+//            } else {
+                lastMove = 1;
+                upEnemyDirection = true;
+//            }
         }
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 3){
 //            System.out.println("move left");
-            leftEnemyDirection = true;
+//            if(lastMove == 4){
+//                upEnemyDirection = true;
+//                lastMove = 1;
+//            } else {
+                lastMove = 3;
+                leftEnemyDirection = true;
+//            }
         }
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 4){
 //            System.out.println("move right");
-            rightEnemyDirection = true;
+//            if(lastMove == 3){
+//                downEnemyDirection = true;
+//                lastMove = 2;
+//            } else {
+                lastMove = 4;
+                rightEnemyDirection = true;
+//            }
         }
     }
 

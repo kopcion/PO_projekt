@@ -44,7 +44,7 @@ public class GameMode extends JFrame {
         });
         panel.add(Button8);
 
-        JButton Button10 = new JButton("Easy with enemy");
+        JButton Button10 = new JButton("Hard with enemy");
         Button10.setBounds(100, 100, 80, 30);
         Button10.addActionListener(event -> {
             setVisible(false);
