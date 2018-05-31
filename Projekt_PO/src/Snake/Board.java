@@ -39,18 +39,15 @@ public class Board extends JPanel implements ActionListener {
     private int apple_x;
     private int apple_y;
 
+    private enum Direction{
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN
+    }
+    private Direction enemy = Direction.LEFT;
+    private Direction player = Direction.RIGHT;
     public boolean withEnemy;
-    private boolean leftDirection = false;
-    private boolean rightDirection = true;
-    private boolean upDirection = false;
-    private boolean downDirection = false;
-
-    private boolean leftEnemyDirection = true;
-    private boolean rightEnemyDirection = false;
-    private boolean upEnemyDirection = false;
-    private boolean downEnemyDirection = false;
-    private int lastMove = 3;
-    private boolean turnAround = false;
     private boolean inGame = true;
     private boolean victory = false;
     private Timer timer;
@@ -111,53 +108,25 @@ public class Board extends JPanel implements ActionListener {
 //            System.out.print('\n');
 //        }
 
-        rightEnemyDirection = false;
-        upEnemyDirection = false;
-        downEnemyDirection = false;
-        leftEnemyDirection = false;
-//        System.out.println("x: " + x_enemy[0]/DOT_SIZE);
-//        System.out.println("y: " + y_enemy[0]/DOT_SIZE);
-//        System.out.println("move is " + moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1]);
-
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 2){
 //            System.out.println("move up");
-//            if(lastMove == 1){
-//                rightEnemyDirection = true;
-//                lastMove = 4;
-//            } else {
-                lastMove = 2;
-                downEnemyDirection = true;
-//            }
+//            downEnemyDirection = true;
+            enemy = Direction.DOWN;
         }
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 1){
-//            System.out.println("move down");\
-//            if(lastMove == 2){
-//                leftEnemyDirection = true;
-//                lastMove = 3;
-//            } else {
-                lastMove = 1;
-                upEnemyDirection = true;
-//            }
+//            System.out.println("move down");
+            enemy = Direction.UP;
+//            upEnemyDirection = true;
         }
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 3){
 //            System.out.println("move left");
-//            if(lastMove == 4){
-//                upEnemyDirection = true;
-//                lastMove = 1;
-//            } else {
-                lastMove = 3;
-                leftEnemyDirection = true;
-//            }
+//            leftEnemyDirection = true;
+            enemy = Direction.LEFT;
         }
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 4){
 //            System.out.println("move right");
-//            if(lastMove == 3){
-//                downEnemyDirection = true;
-//                lastMove = 2;
-//            } else {
-                lastMove = 4;
-                rightEnemyDirection = true;
-//            }
+//            rightEnemyDirection = true;
+            enemy = Direction.RIGHT;
         }
     }
 
@@ -221,13 +190,10 @@ public class Board extends JPanel implements ActionListener {
     private void loadImages() {
         try {
             URL link=Board.class.getClassLoader().getResource("img/dot.png");
-//            ball = ImageIO.read(new File("./dot.png"));
             ball = ImageIO.read(link);
             link=Board.class.getClassLoader().getResource("img/apple.png");
-//            apple = ImageIO.read(new File("./apple.png"));
             apple = ImageIO.read(link);
             link=Board.class.getClassLoader().getResource("img/head.png");
-//            head = ImageIO.read(new File("./head.png"));
             head = ImageIO.read(link);
         } catch (IOException e) {
             e.printStackTrace();
@@ -315,37 +281,46 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void move() {
-        if (withEnemy) enemyMove();
-//        System.out.print(x[0]/10 + " ");
-//        System.out.println(y[0]/10);
         for (int z = dots; z > 0; z--) {
             x[z] = x[(z - 1)];
             y[z] = y[(z - 1)];
         }
-        if (withEnemy) for (int z = dots_enemy; z > 0; z--) {
-            x_enemy[z] = x_enemy[(z - 1)];
-            y_enemy[z] = y_enemy[(z - 1)];
+
+        switch (player){
+            case LEFT:
+                x[0] -= DOT_SIZE;
+                break;
+            case RIGHT:
+                x[0] += DOT_SIZE;
+                break;
+            case UP:
+                y[0] -= DOT_SIZE;
+                break;
+            case DOWN:
+                y[0] += DOT_SIZE;
+                break;
         }
+        if (withEnemy){
+            enemyMove();
 
-
-        if (leftDirection) {
-            x[0] -= DOT_SIZE;
-        } else if (rightDirection) {
-            x[0] += DOT_SIZE;
-        } else if (upDirection) {
-            y[0] -= DOT_SIZE;
-        } else if (downDirection) {
-            y[0] += DOT_SIZE;
-        }
-
-        if (leftEnemyDirection) {
-            x_enemy[0] -= DOT_SIZE;
-        } else if (rightEnemyDirection) {
-            x_enemy[0] += DOT_SIZE;
-        } else if (upEnemyDirection) {
-            y_enemy[0] -= DOT_SIZE;
-        } else if (downEnemyDirection) {
-            y_enemy[0] += DOT_SIZE;
+            for (int z = dots_enemy; z > 0; z--) {
+                x_enemy[z] = x_enemy[(z - 1)];
+                y_enemy[z] = y_enemy[(z - 1)];
+            }
+            switch (enemy){
+                case LEFT:
+                    x_enemy[0] -= DOT_SIZE;
+                    break;
+                case RIGHT:
+                    x_enemy[0] += DOT_SIZE;
+                    break;
+                case UP:
+                    y_enemy[0] -= DOT_SIZE;
+                    break;
+                case DOWN:
+                    y_enemy[0] += DOT_SIZE;
+                    break;
+            }
         }
     }
 
@@ -428,28 +403,20 @@ public class Board extends JPanel implements ActionListener {
 
             int key = e.getKeyCode();
 
-            if ((key == KeyEvent.VK_LEFT) && (!rightDirection)) {
-                leftDirection = true;
-                upDirection = false;
-                downDirection = false;
+            if ((key == KeyEvent.VK_LEFT) && (player != Direction.RIGHT)) {
+                player = Direction.LEFT;
             }
 
-            if ((key == KeyEvent.VK_RIGHT) && (!leftDirection)) {
-                rightDirection = true;
-                upDirection = false;
-                downDirection = false;
+            if ((key == KeyEvent.VK_RIGHT) && (player != Direction.LEFT)) {
+                player = Direction.RIGHT;
             }
 
-            if ((key == KeyEvent.VK_UP) && (!downDirection)) {
-                upDirection = true;
-                rightDirection = false;
-                leftDirection = false;
+            if ((key == KeyEvent.VK_UP) && (player != Direction.DOWN)) {
+                player = Direction.UP;
             }
 
-            if ((key == KeyEvent.VK_DOWN) && (!upDirection)) {
-                downDirection = true;
-                rightDirection = false;
-                leftDirection = false;
+            if ((key == KeyEvent.VK_DOWN) && (player != Direction.UP)) {
+                player = Direction.DOWN;
             }
         }
     }
