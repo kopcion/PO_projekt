@@ -64,9 +64,6 @@ public class Board extends JPanel implements ActionListener {
     private int[][] moves = new int[B_HEIGHT/DOT_SIZE+2][B_WIDTH/DOT_SIZE+2];
 
     private void enemyMove(){
-//        if(turnAround){
-//            if(lastMove)
-//        }
         for (int i=1; i <= B_HEIGHT/DOT_SIZE; i++){
             for(int j=1; j <= B_WIDTH/DOT_SIZE; j++){
                 moves[i][j] = -1;
@@ -85,47 +82,21 @@ public class Board extends JPanel implements ActionListener {
             moves[i][0] = -2;
             moves[i][B_WIDTH/DOT_SIZE+1] = -2;
         }
-//        System.out.println(apple_x/DOT_SIZE);
-//        System.out.println(apple_y/DOT_SIZE);
+
         moves[apple_y/DOT_SIZE+1][apple_x/DOT_SIZE+1] = 0;
-//        for(int i=0; i < 32; i++){
-//            for(int j=0; j < 32; j++){
-//                System.out.print(moves[i][j]+" ");
-//            }
-//            System.out.print('\n');
-//        }
+
         bfs(apple_y/DOT_SIZE+1, apple_x/DOT_SIZE+1);
 
-//        System.out.print('\n');
-//        System.out.print(count++);
-//        System.out.print('\n');
-//        System.out.print('\n');
-
-//        for(int i=0; i < 32; i++){
-//            for(int j=0; j < 32; j++){
-//                System.out.print(moves[i][j]+" ");
-//            }
-//            System.out.print('\n');
-//        }
-
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 2){
-//            System.out.println("move up");
-//            downEnemyDirection = true;
             enemy = Direction.DOWN;
         }
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 1){
-//            System.out.println("move down");
             enemy = Direction.UP;
-//            upEnemyDirection = true;
         }
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 3){
-//            System.out.println("move left");
-//            leftEnemyDirection = true;
             enemy = Direction.LEFT;
         }
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 4){
-//            System.out.println("move right");
-//            rightEnemyDirection = true;
             enemy = Direction.RIGHT;
         }
     }
