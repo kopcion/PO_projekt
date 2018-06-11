@@ -4,57 +4,47 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameMode extends JFrame {
+    private Control control;
 
-    public GameMode(){
+    public GameMode(Control control){
+        this.control = control;
+        this.control.setGameMode(this);
+
         JPanel panel = new JPanel();
         getContentPane().add(panel);
 
-        panel.setLayout(new GridLayout(4,3));
+        panel.setLayout(new GridLayout(5,1));
 
-        JButton Button4 = new JButton("Easy");
-        Button4.setBounds(100, 100, 80, 30);
-        Button4.addActionListener(event -> {
+        Checkbox gameLevel = new Checkbox();
+        gameLevel.setLabel("hard");
+        panel.add(gameLevel);
+
+        Checkbox withEnemy = new Checkbox();
+        withEnemy.setLabel("enemy");
+        panel.add(withEnemy);
+
+        Checkbox bonusApple = new Checkbox();
+        bonusApple.setLabel("bonus apple");
+        panel.add(bonusApple);
+
+        Checkbox starvation = new Checkbox();
+        starvation.setLabel("starvation");
+        panel.add(starvation);
+
+        JButton start = new JButton("Go!");
+//        start.setBounds();
+        start.addActionListener(event -> {
             setVisible(false);
             EventQueue.invokeLater(()->{
-                JFrame ex = new Snake(160, false);
+                int rate = 0;
+                int delay = 160;
+                if(starvation.getState()) rate = 160;
+                if(gameLevel.getState()) delay = 100;
+                JFrame ex = new Snake(delay, withEnemy.getState(), rate, control, bonusApple.getState());
                 ex.setVisible(true);
             });
         });
-        panel.add(Button4);
-
-        JButton Button6 = new JButton("Hard");
-        Button6.setBounds(10, 100, 80, 30);
-        Button6.addActionListener(event -> {
-            setVisible(false);
-            EventQueue.invokeLater(()->{
-                JFrame ex = new Snake(80, false);
-                ex.setVisible(true);
-            });
-        });
-        panel.add(Button6);
-
-        JButton Button8 = new JButton("Easy with enemy");
-        Button8.setBounds(100, 100, 80, 30);
-        Button8.addActionListener(event -> {
-            setVisible(false);
-            EventQueue.invokeLater(()->{
-                JFrame ex = new Snake(160, true);
-                ex.setVisible(true);
-            });
-        });
-        panel.add(Button8);
-
-        JButton Button10 = new JButton("Hard with enemy");
-        Button10.setBounds(100, 100, 80, 30);
-        Button10.addActionListener(event -> {
-            setVisible(false);
-            EventQueue.invokeLater(()->{
-                JFrame ex = new Snake(80, true);
-                ex.setVisible(true);
-            });
-        });
-        panel.add(Button10);
-
+        panel.add(start);
 
         setTitle("Chose a game");
         setSize(300, 200);
@@ -64,10 +54,8 @@ public class GameMode extends JFrame {
     }
 
     public static void main(String[] args) {
-        GameMode mode = new GameMode();
-//        EventQueue.invokeLater(() -> {
-//            JFrame ex = new Snake();
-//            ex.setVisible(true);
-//        });
+        Control control1 = new Control();
+        control1.setDatabase(new Database());
+        GameMode mode = new GameMode(control1);
     }
 }

@@ -1,5 +1,6 @@
-import Snake.Snake;
 import Snake.GameMode;
+import Snake.Control;
+import Snake.Database;
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,6 +8,9 @@ import java.awt.*;
 public class Menu extends JFrame {
 
     public Menu(){
+        Control control = new Control();
+        control.setDatabase(new Database());
+
         JPanel panel = new JPanel();
         getContentPane().add(panel);
 
@@ -32,7 +36,7 @@ public class Menu extends JFrame {
         Button8.setBounds(100, 100, 80, 30);
         Button8.addActionListener(event -> {
             setVisible(false);
-            new GameMode();
+            new GameMode(control);
         });
         panel.add(Button8);
 

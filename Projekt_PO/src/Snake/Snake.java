@@ -1,16 +1,42 @@
 package Snake;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class Snake extends JFrame {
+    private Control control;
+    int delay;
+    boolean withEnemy;
 
-    public Snake(int Delay, boolean withEnemy) {
-        initUI(Delay, withEnemy);
+    public Snake(int Delay, boolean withEnemy, Control control) {
+        this.control = control;
+        control.setSnake(this);
+        this.delay = Delay;
+        this.withEnemy = withEnemy;
+        initUI(Delay, withEnemy, 0, false);
     }
 
-    private void initUI(int Delay, boolean withEnemy) {
-        Board board = new Board(Delay, withEnemy);
+    public Snake(int Delay, boolean withEnemy, int starvation, Control control){
+        this.control = control;
+        control.setSnake(this);
+        this.delay = Delay;
+        this.withEnemy = withEnemy;
+        initUI(Delay, withEnemy, starvation, false);
+    }
+
+    public Snake(int Delay, boolean withEnemy, int starvation, Control control, boolean bonusApple){
+        this.control = control;
+        control.setSnake(this);
+        this.delay = Delay;
+        this.withEnemy = withEnemy;
+        initUI(Delay, withEnemy, starvation, bonusApple);
+    }
+
+
+
+
+    private void initUI(int Delay, boolean withEnemy, int starvation, boolean bonusApple) {
+        Board board = new Board(Delay, withEnemy, starvation, control, bonusApple);
+
         add(board);
 
         setResizable(false);
@@ -19,13 +45,5 @@ public class Snake extends JFrame {
         setTitle("Snake");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-
-    public static void main(String[] args) {
-        EventQueue.invokeLater(()->{
-            JFrame ex = new Snake(80, true);
-            ex.setVisible(true);
-        });
     }
 }
