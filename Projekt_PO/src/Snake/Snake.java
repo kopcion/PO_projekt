@@ -7,22 +7,6 @@ public class Snake extends JFrame {
     int delay;
     boolean withEnemy;
 
-    public Snake(int Delay, boolean withEnemy, Control control) {
-        this.control = control;
-        control.setSnake(this);
-        this.delay = Delay;
-        this.withEnemy = withEnemy;
-        initUI(Delay, withEnemy, 0, false);
-    }
-
-    public Snake(int Delay, boolean withEnemy, int starvation, Control control){
-        this.control = control;
-        control.setSnake(this);
-        this.delay = Delay;
-        this.withEnemy = withEnemy;
-        initUI(Delay, withEnemy, starvation, false);
-    }
-
     public Snake(int Delay, boolean withEnemy, int starvation, Control control, boolean bonusApple){
         this.control = control;
         control.setSnake(this);
@@ -30,9 +14,6 @@ public class Snake extends JFrame {
         this.withEnemy = withEnemy;
         initUI(Delay, withEnemy, starvation, bonusApple);
     }
-
-
-
 
     private void initUI(int Delay, boolean withEnemy, int starvation, boolean bonusApple) {
         Board board = new Board(Delay, withEnemy, starvation, control, bonusApple);

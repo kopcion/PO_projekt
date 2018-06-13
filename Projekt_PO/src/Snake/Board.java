@@ -28,12 +28,13 @@ public class Board extends JPanel implements ActionListener {
     private final int ALL_DOTS = 900;
     private final int RAND_POS = 29;
     public int DELAY;
-
     private final int x[] = new int[ALL_DOTS];
+
     private final int y[] = new int[ALL_DOTS];
     private final int x_enemy[] = new int[ALL_DOTS];
     private final int y_enemy[] = new int[ALL_DOTS];
 
+    private int ticks = 0;
     private int dots;
     private int dots_enemy;
     private int apple_x;
@@ -45,6 +46,7 @@ public class Board extends JPanel implements ActionListener {
     private int last_apple_enemy;
     private int time;
     private boolean bonusApple;
+    private boolean moved = false;
 
     private enum Direction{
         LEFT,
@@ -52,6 +54,7 @@ public class Board extends JPanel implements ActionListener {
         UP,
         DOWN
     }
+
     private Direction enemy;
     private Direction player;
     public boolean withEnemy;
@@ -101,7 +104,8 @@ public class Board extends JPanel implements ActionListener {
             moves[i][0] = -2;
             moves[i][B_WIDTH/DOT_SIZE+1] = -2;
         }
-        if((Math.abs(y_enemy[0]-apple_y) + Math.abs(x_enemy[0]-apple_x)) <= (Math.abs(y_enemy[0]-apple_y2) + Math.abs(x_enemy[0]-apple_x2))){
+
+        if(!bonusApple || (Math.abs(y_enemy[0]-apple_y) + Math.abs(x_enemy[0]-apple_x)) <= (Math.abs(y_enemy[0]-apple_y2) + Math.abs(x_enemy[0]-apple_x2))){
             moves[apple_y/DOT_SIZE+1][apple_x/DOT_SIZE+1] = 0;
             bfs(apple_y/DOT_SIZE+1, apple_x/DOT_SIZE+1);
         } else {
@@ -110,17 +114,18 @@ public class Board extends JPanel implements ActionListener {
         }
 
 
-
+        System.out.print("x : ");
+        System.out.print(x_enemy[0]);
+        System.out.print(", y : ");
+        System.out.println(y_enemy[0]);
+        System.out.println(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1]);
         if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 2){
             enemy = Direction.DOWN;
-        }
-        if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 1){
+        } else if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 1){
             enemy = Direction.UP;
-        }
-        if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 3){
+        } else if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 3){
             enemy = Direction.LEFT;
-        }
-        if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 4){
+        } else if(moves[y_enemy[0]/DOT_SIZE+1][x_enemy[0]/DOT_SIZE+1] == 4){
             enemy = Direction.RIGHT;
         }
     }
@@ -298,48 +303,50 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void move() {
-        if(starvation!=0){
-            if(time - last_apple > starvation) {
-                dots--;
-                last_apple = time;
+        if(ticks%2 == 0) {
+            if (starvation != 0) {
+                if (time - last_apple > starvation) {
+                    dots--;
+                    last_apple = time;
+                }
+                if (withEnemy && time - last_apple_enemy > starvation) {
+                    dots_enemy--;
+                    last_apple_enemy = time;
+                }
+                if (dots == 0) {
+                    victory = false;
+                    inGame = false;
+                    return;
+                }
+                if (withEnemy && dots_enemy == 0) {
+                    victory = true;
+                    inGame = false;
+                    return;
+                }
             }
-            if(withEnemy && time - last_apple_enemy > starvation){
-                dots_enemy--;
-                last_apple_enemy = time;
+            for (int z = dots; z > 0; z--) {
+                x[z] = x[(z - 1)];
+                y[z] = y[(z - 1)];
             }
-            if(dots == 0){
-                victory = false;
-                inGame = false;
-//                gameOver(g);
-                return;
-            }
-            if(withEnemy && dots_enemy == 0){
-                victory = true;
-                inGame = false;
-//                gameOver(g);
-                return;
-            }
-        }
-        for (int z = dots; z > 0; z--) {
-            x[z] = x[(z - 1)];
-            y[z] = y[(z - 1)];
-        }
 
-        switch (player){
-            case LEFT:
-                x[0] -= DOT_SIZE;
-                break;
-            case RIGHT:
-                x[0] += DOT_SIZE;
-                break;
-            case UP:
-                y[0] -= DOT_SIZE;
-                break;
-            case DOWN:
-                y[0] += DOT_SIZE;
-                break;
+            switch (player) {
+                case LEFT:
+                    x[0] -= DOT_SIZE;
+                    break;
+                case RIGHT:
+                    x[0] += DOT_SIZE;
+                    break;
+                case UP:
+                    y[0] -= DOT_SIZE;
+                    break;
+                case DOWN:
+                    y[0] += DOT_SIZE;
+                    break;
+            }
+
+            moved = false;
         }
-        if (withEnemy){
+        if (withEnemy && ticks%3 == 0){
             enemyMove();
 
             for (int z = dots_enemy; z > 0; z--) {
@@ -494,7 +501,9 @@ public class Board extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (inGame) {
+        ticks = (ticks+1)%6;
+
+        if(ticks%2 == 0 || ticks%3 == 0 && inGame) {
             checkApple();
             checkCollision();
 
@@ -510,7 +519,8 @@ public class Board extends JPanel implements ActionListener {
 
             int key = e.getKeyCode();
 
-            if(inGame){
+            if(inGame && !moved){
+                moved = true;
                 if ((key == KeyEvent.VK_LEFT) && (player != Direction.RIGHT)) {
                     player = Direction.LEFT;
                 }

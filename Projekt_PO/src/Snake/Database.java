@@ -35,6 +35,9 @@ public class Database {
         }
     }
 
+    int size() throws Exception {
+        return biggerThan(-1000);
+    }
     int biggerThan(int score) throws Exception {
         String query = "SELECT * FROM scores where score > " + score + ";";
 
@@ -55,11 +58,11 @@ public class Database {
         id++;
     }
 
-    String getData(int id) throws Exception {
-        String query = "SELECT address FROM scores where id = " + id + ";";
+    int getData(int id) throws Exception {
+        String query = "SELECT score FROM scores where id = " + id + ";";
         Statement stmt = conn.createStatement();
         ResultSet set = stmt.executeQuery(query);
-        return set.getString("address");
+        return set.getInt("score");
     }
 
     public static void main(String[] args) {

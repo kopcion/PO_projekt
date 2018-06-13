@@ -10,10 +10,13 @@ public class GameMode extends JFrame {
         this.control = control;
         this.control.setGameMode(this);
 
+
+        Ranking rank = new Ranking(control);
         JPanel panel = new JPanel();
+
         getContentPane().add(panel);
 
-        panel.setLayout(new GridLayout(5,1));
+        panel.setLayout(new GridLayout(6,1));
 
         Checkbox gameLevel = new Checkbox();
         gameLevel.setLabel("hard");
@@ -37,14 +40,23 @@ public class GameMode extends JFrame {
             setVisible(false);
             EventQueue.invokeLater(()->{
                 int rate = 0;
-                int delay = 160;
+                int delay = 80;//160
                 if(starvation.getState()) rate = 160;
-                if(gameLevel.getState()) delay = 100;
+                if(gameLevel.getState()) delay = 40;//100
                 JFrame ex = new Snake(delay, withEnemy.getState(), rate, control, bonusApple.getState());
                 ex.setVisible(true);
             });
         });
         panel.add(start);
+
+        JButton ranking = new JButton("ranking");
+//        start.setBounds();
+        ranking.addActionListener(event -> {
+            setVisible(false);
+            rank.refresh();
+            rank.setVisible(true);
+        });
+        panel.add(ranking);
 
         setTitle("Chose a game");
         setSize(300, 200);
