@@ -25,6 +25,9 @@ public class RankingView extends JPanel {
                     control.getRanking().setVisible(false);
                     control.getGameMode().setVisible(true);
                 }
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+                    System.exit(0);
+                }
             }
 
             @Override

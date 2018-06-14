@@ -71,15 +71,8 @@ public class Board extends JPanel implements ActionListener {
         this.control = control;
         this.starvation = starvation;
         this.bonusApple = bonusApple;
-
-        inGame = true;
-        victory = false;
-        last_apple = 0;
-        last_apple_enemy = 0;
         this.starvation = starvation;
-        time = 0;
-        enemy = Direction.LEFT;
-        player = Direction.RIGHT;
+
         initBoard();
     }
 
@@ -201,6 +194,14 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void initGame() {
+        inGame = true;
+        victory = false;
+        last_apple = 0;
+        last_apple_enemy = 0;
+        time = 0;
+        enemy = Direction.LEFT;
+        player = Direction.RIGHT;
+
         dots = 3;
         dots_enemy = 3;
 
@@ -413,13 +414,13 @@ public class Board extends JPanel implements ActionListener {
         if (x[0] >= B_WIDTH) {
             inGame = false;
         }
-
         if (x[0] < 0) {
             inGame = false;
         }
 
         if (!inGame) {
             timer.stop();
+            repaint();
         }
     }
 
@@ -544,6 +545,11 @@ public class Board extends JPanel implements ActionListener {
 
                 if(key == KeyEvent.VK_ESCAPE){
                     System.exit(0);
+                }
+
+                if(key == KeyEvent.VK_R){
+                    initGame();
+                    repaint();
                 }
             }
 
